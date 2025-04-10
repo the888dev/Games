@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinity Games | AAA Roblox Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @keyframes particle-assemble {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .particle-animation span {
+            display: inline-block;
+            opacity: 0;
+            animation: particle-assemble 0.5s forwards;
+        }
+        
+        .particle-animation span:nth-child(1) { animation-delay: 0.1s; }
+        .particle-animation span:nth-child(2) { animation-delay: 0.2s; }
+        .particle-animation span:nth-child(3) { animation-delay: 0.3s; }
+        .particle-animation span:nth-child(4) { animation-delay: 0.4s; }
+        .particle-animation span:nth-child(5) { animation-delay: 0.5s; }
+        .particle-animation span:nth-child(6) { animation-delay: 0.6s; }
+        .particle-animation span:nth-child(7) { animation-delay: 0.7s; }
+        .particle-animation span:nth-child(8) { animation-delay: 0.8s; }
+        .particle-animation span:nth-child(9) { animation-delay: 0.9s; }
+        
+        .video-overlay {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%);
+        }
+        
+        .stats-bar {
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+        
+        .service-tier:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .hidden-game {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-white text-black">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-black z-50 flex items-center justify-center">
+        <div class="particle-animation text-6xl font-bold text-white">
+            <span>I</span><span>N</span><span>F</span><span>I</span><span>N</span><span>I</span><span>T</span><span>Y</span><span> </span> G</span><span>A</span></span><span>M</span>E</span></span><span>S</span>
+
+        </div>
+    </div>
+
+
+    <!-- Hidden Game Easter Egg -->
+    <div id="hidden-game" class="hidden-game">
+        <div class="text-center p-8 max-w-2xl">
+            <h2 class="text-4xl font-bold text-white mb-4">Infinity Games Demo</h2>
+            <p class="text-gray-300 mb-6">Experience our Roblox development expertise in this mini demo.</p>
+            <div class="bg-gray-800 h-64 w-full flex items-center justify-center mb-6">
+                <p class="text-gray-400">[Game would load here in production]</p>
+            </div>
+            <button id="close-game" class="px-6 py-2 bg-white text-black font-bold hover:bg-gray-200 transition">Close</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full bg-black text-white z-40 py-8 px-10 shadow-xl">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="Images/iNFINITY LOGO.png" 
+                     alt="Infinity Games Logo" 
+                     class="h-20 w-auto mr-6"> <!-- h-20 = 5rem/80px -->
+            </div>
+            
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="hover:text-gray-300 transition">Home</a>
+                <a href="#traction" class="hover:text-gray-300 transition">Traction</a>
+                <a href="#market" class="hover:text-gray-300 transition">Market</a>
+                <a href="#team" class="hover:text-gray-300 transition">Team</a>
+                <a href="#case-studies" class="hover:text-gray-300 transition">Case Studies</a>
+                <a href="#investors" class="hover:text-gray-300 transition">Investors</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-black absolute top-full left-0 w-full py-4 px-6">
+            <div class="flex flex-col space-y-4">
+                <a href="#home" class="hover:text-gray-300 transition">Home</a>
+                <a href="#traction" class="hover:text-gray-300 transition">Traction</a>
+                <a href="#market" class="hover:text-gray-300 transition">Market</a>
+                <a href="#team" class="hover:text-gray-300 transition">Team</a>
+                <a href="#case-studies" class="hover:text-gray-300 transition">Case Studies</a>
+                <a href="#investors" class="hover:text-gray-300 transition">Investors</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen bg-black text-white overflow-hidden">
+        <div class="absolute inset-0 video-overlay z-10"></div>
+        <video autoplay muted loop class="absolute inset-0 w-full h-full object-cover opacity-70">
+          
+            <video controls width="100%">
+                <source src="Images/Reversal Red Cutscene.mp4" 
+                        type="video/mp4">
+              </video>
+
+            <!-- Fallback image -->
+            <img src="Images/1630658952114.jpg" alt="Roblox Gameplay" class="w-full h-full object-cover">
+        </video>
+        
+        <div class="relative z-20 h-full flex flex-col justify-center items-center text-center px-6">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 max-w-4xl fade-in">
+                INFINITY GAMES:<br>
+                <span class="text-gray-300">THE AAA STUDIO FOR BRANDED ROBLOX EXPERIENCES</span>
+            </h1>
+            
+            <div class="mb-12 fade-in" style="animation-delay: 0.3s;">
+                <p class="text-gray-400 mb-2">PROBLEM: <span class="text-gray-300">Brands struggle to engage Gen Z on Roblox.</span></p>
+                <p class="text-white text-xl font-bold">SOLUTION: <span class="text-gray-100">We build immersive, revenue-driving worlds.</span></p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-4 fade-in" style="animation-delay: 0.6s;">
+                <a href="#contact" class="bg-white text-black px-8 py-3 font-bold hover:bg-gray-200 transition">Schedule a Pitch Meeting</a>
+                <a href="#investors" class="border-2 border-white text-white px-8 py-3 font-bold hover:bg-white hover:text-black transition">Download Investor Deck</a>
+            </div>
+        </div>
+        
+        <!-- Live Stats Bar -->
+        <div class="absolute bottom-0 left-0 w-full bg-black text-white py-3 z-30 stats-bar">
+            <div class="container mx-auto flex justify-center md:justify-between items-center flex-wrap text-center md:text-left">
+                <div class="flex flex-wrap justify-center gap-6 md:gap-12">
+                    <div class="flex items-center">
+                        <i class="fas fa-users mr-2 text-gray-400"></i>
+                        <span>Active Players: <span class="font-bold">3,753+</span></span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-chart-line mr-2 text-gray-400"></i>
+                        <span>Client Revenue: <span class="font-bold">$380K+</span></span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-gamepad mr-2 text-gray-400"></i>
+                        <span>Games Launched: <span class="font-bold">11+</span></span>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <span class="text-gray-400">Real-time data</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section class="py-12 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h3 class="text-center text-gray-500 mb-6">BACKED BY</h3>
+            <div class="flex flex-wrap justify-center items-center gap-12">
+                <img src="Images/Gamefam_29.webp" alt="GameFam" class="h-12 opacity-80">
+                <img src="Images/noFilter (1).png" alt="Fireblox" class="h-12 opacity-80">
+            </div>
+            
+            <div class="max-w-3xl mx-auto mt-12">
+                <blockquote class="text-center italic text-gray-700">
+                    "Infinity Games redefines branded Roblox experiences with their technical excellence and creative vision."
+                    <footer class="mt-4 text-gray-500 not-italic">— GameFam Executive</footer>
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- Traction Section -->
+    <section id="traction" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16">TRACTION & VALIDATION</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <div class="bg-black text-white p-8 rounded-lg shadow-xl">
+                    <h3 class="text-2xl font-bold mb-4">Financial Performance</h3>
+                    <p class="text-5xl font-extrabold mb-4">$90K+</p>
+                    <p class="text-gray-300">Profit in 5 Months</p>
+                </div>
+                
+                <div class="bg-black text-white p-8 rounded-lg shadow-xl">
+                    <h3 class="text-2xl font-bold mb-4">Client Impact</h3>
+                    <p class="text-5xl font-extrabold mb-4">$300K+</p>
+                    <p class="text-gray-300">Generated for Clients</p>
+                </div>
+                
+                <div class="bg-black text-white p-8 rounded-lg shadow-xl">
+                    <h3 class="text-2xl font-bold mb-4">Production Scale</h3>
+                    <p class="text-5xl font-extrabold mb-4">10+</p>
+                    <p class="text-gray-300">Games Launched Since Sept 2023</p>
+                </div>
+            </div>
+            
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-2xl font-bold mb-8 text-center">CLIENT TESTIMONIALS</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="border border-gray-200 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <img src="Images/aXEL.jpg" alt="Client" class="h-12 w-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-bold">Brand Marketing Director</p>
+                                <p class="text-gray-500 text-sm">Fortune 500 Company</p>
+                            </div>
+                        </div>
+                        <p class="italic">"Infinity Games tripled our Roblox revenue within 3 months of launching our experience. Their team understands brand safety while still creating engaging gameplay."</p>
+                    </div>
+                    
+                    <div class="border border-gray-200 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <img src="Images/x4bfqwlyrxvguz0hzole.avif" alt="Client" class="h-12 w-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-bold">Chief Digital Officer</p>
+                                <p class="text-gray-500 text-sm">Major Entertainment Brand</p>
+                            </div>
+                        </div>
+                        <p class="italic">"We've worked with multiple Roblox developers, but Infinity Games delivered the most polished experience with measurable ROI. Their analytics dashboard is unparalleled."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Opportunity -->
+    <section id="market" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16">MARKET OPPORTUNITY</h2>
+            
+            <div class="flex flex-col items-center mb-16">
+                <div class="relative w-64 h-64 mb-8">
+                    <!-- TAM/SAM/SOM Visualization -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-64 h-64 rounded-full border-4 border-black opacity-20"></div>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-48 h-48 rounded-full border-4 border-gray-600 opacity-30"></div>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-32 h-32 rounded-full border-4 border-white bg-black"></div>
+                    </div>
+                    
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                        <p class="text-sm">TAM</p>
+                        <p class="font-bold">$6B+</p>
+                    </div>
+                    <div class="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 text-center">
+                        <p class="text-sm">SAM</p>
+                        <p class="font-bold">$1.2B</p>
+                    </div>
+                    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 text-center">
+                        <p class="text-sm">SOM</p>
+                        <p class="font-bold">$50M+</p>
+                    </div>
+                </div>
+                
+                <div class="text-center max-w-2xl">
+                    <p class="mb-4">Roblox represents one of the fastest-growing digital economies, with branded experiences becoming a primary growth vector.</p>
+                    <p class="font-bold">Our focus on premium branded experiences positions us to capture disproportionate value in this expanding market.</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-bold mb-3">Total Addressable Market</h3>
+                    <p class="text-gray-700">Entire Roblox platform revenue including user spending, advertising, and branded experiences.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-bold mb-3">Serviceable Available Market</h3>
+                    <p class="text-gray-700">Branded experiences and partnerships specifically, our core business focus.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-bold mb-3">Serviceable Obtainable Market</h3>
+                    <p class="text-gray-700">Our realistic market share projection based on current traction and pipeline.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16">TEAM</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <div class="flex flex-col items-center text-center">
+                    <img src="Images/B6435530-AAF8-42CE-87EA-C849A58140A0.webp" alt="CEO"class="h-40 w-40 rounded-full mb-4 object-cover">
+                    <h3 class="text-xl font-bold">Benjamin Muzigwa</h3>
+                    <p class="text-gray-600 mb-2">Founder & CEO</p>
+                    <p class="text-gray-700">Former Roblox Top 100 Developer, 10+ years platform experience</p>
+                </div>
+               
+                
+                <div class="flex flex-col items-center text-center">
+                    <img src="images/Liam.webp" alt="CMO" class="h-40 w-40 rounded-full mb-4 object-cover">
+                    <h3 class="text-xl font-bold">Liam Scott</h3>
+                    <p class="text-gray-600 mb-2">Chief Marketing Officer</p>
+                    <p class="text-gray-700">Ex-brand strategist with Fortune 500 client experience</p>
+                </div>
+            </div>
+
+           
+            
+            <div class="max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold mb-6 text-center">ADVISORS & PARTNERS</h3>
+                
+                <div class="flex flex-wrap justify-center items-center gap-8">
+                    <div class="flex items-center">
+                        <img src="Images/Gamefam_29.webp" alt="GameFam" class="h-10 mr-4">
+                        <div>
+                            <p class="font-bold">GameFam</p>
+                            <p class="text-gray-600 text-sm">Strategic Development Partner</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <img src="Images/noFilter (1).png" alt="FireHeart" class="h-10 mr-4">
+                        <div>
+                            <p class="font-bold">Fireblox Games</p>
+                            <p class="text-gray-600 text-sm">Creative Collaborator</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies -->
+    <section id="case-studies" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16">CASE STUDIES</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-black text-white p-8 rounded-lg shadow-xl">
+                    <h3 class="text-2xl font-bold mb-4">Fashion Brand Activation</h3>
+                    <div class="mb-6">
+                        <p class="text-gray-400 mb-2">CHALLENGE:</p>
+                        <p>Luxury brand needed authentic Gen Z engagement without compromising premium positioning.</p>
+                    </div>
+                    <div class="mb-6">
+                        <p class="text-gray-400 mb-2">SOLUTION:</p>
+                        <p>Custom virtual try-on experience with exclusive digital collectibles tied to real-world purchases.</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 mb-2">RESULTS:</p>
+                        <p class="text-3xl font-bold">+200% DAU</p>
+                        <p>12% conversion to real-world purchases</p>
+                    </div>
+                </div>
+                
+                <div class="bg-black text-white p-8 rounded-lg shadow-xl">
+                    <h3 class="text-2xl font-bold mb-4">Entertainment Franchise Launch</h3>
+                    <div class="mb-6">
+                        <p class="text-gray-400 mb-2">CHALLENGE:</p>
+                        <p>Major film studio wanted to build hype for new franchise targeting 13-17 demographic.</p>
+                    </div>
+                    <div class="mb-6">
+                        <p class="text-gray-400 mb-2">SOLUTION:</p>
+                        <p>Interactive story game with episodic content releases synchronized with marketing calendar.</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 mb-2">RESULTS:</p>
+                        <p class="text-3xl font-bold">5M+ Visits</p>
+                        <p>28% engagement rate (3x platform average)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <a href="#" class="inline-block border-2 border-black px-8 py-3 font-bold hover:bg-black hover:text-white transition">
+                    View All Case Studies
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Competition -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16">COMPETITIVE ADVANTAGE</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="border-b-2 border-black">
+                            <th class="text-left py-4 px-4"></th>
+                            <th class="text-left py-4 px-4 font-bold">Infinity Games</th>
+                            <th class="text-left py-4 px-4">Freelancers</th>
+                            <th class="text-left py-4 px-4">Other Agencies</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-4 px-4 font-medium">Development Speed</td>
+                            <td class="py-4 px-4 font-bold">4-6 weeks</td>
+                            <td class="py-4 px-4">8-12 weeks</td>
+                            <td class="py-4 px-4">12+ weeks</td>
+                        </tr>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-4 px-4 font-medium">ROI Tracking</td>
+                            <td class="py-4 px-4 font-bold">Advanced Analytics</td>
+                            <td class="py-4 px-4">Basic Metrics</td>
+                            <td class="py-4 px-4">Limited Reporting</td>
+                        </tr>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-4 px-4 font-medium">Brand Safety</td>
+                            <td class="py-4 px-4 font-bold">Enterprise-grade</td>
+                            <td class="py-4 px-4">Variable</td>
+                            <td class="py-4 px-4">Moderate</td>
+                        </tr>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-4 px-4 font-medium">Scalability</td>
+                            <td class="py-4 px-4 font-bold">50+ Concurrent Projects</td>
+                            <td class="py-4 px-4">1-2 Projects</td>
+                            <td class="py-4 px-4">5-10 Projects</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Revenue Models</td>
+                            <td class="py-4 px-4 font-bold">Multiple Options</td>
+                            <td class="py-4 px-4">Fixed Fee</td>
+                            <td class="py-4 px-4">Fixed Fee</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Model -->
+    <section class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16">BUSINESS MODEL</h2>
+            
+            <div class="flex flex-col items-center mb-16">
+                <div class="relative w-full max-w-2xl h-64 mb-8">
+                    <!-- Service Tier Pyramid -->
+                    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-4/5 h-16 bg-black"></div>
+                    <div class="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-3/5 h-16 bg-gray-800"></div>
+                    <div class="absolute bottom-32 left-1/2 transform -translate-x-1/2 w-2/5 h-16 bg-gray-600"></div>
+                    <div class="absolute bottom-48 left-1/2 transform -translate-x-1/2 w-1/5 h-16 bg-gray-400"></div>
+                    
+                    <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-center text-white text-sm">
+                        Full-Service Branded Experiences
+                    </div>
+                    <div class="absolute bottom-18 left-1/2 transform -translate-x-1/2 text-center text-white text-sm">
+                        Premium Development
+                    </div>
+                    <div class="absolute bottom-34 left-1/2 transform -translate-x-1/2 text-center text-white text-sm">
+                        Standard Development
+                    </div>
+                    <div class="absolute bottom-50 left-1/2 transform -translate-x-1/2 text-center text-black text-sm">
+                        Basic Dev Support
+                    </div>
+                </div>
+                
+                <div class="text-center max-w-2xl">
+                    <p class="mb-4">We offer tiered service packages to meet clients at their level of Roblox maturity, from first-time experiments to enterprise-grade activations.</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4">Revenue Share Model</h3>
+                    <p class="text-5xl font-extrabold mb-4">15%</p>
+                    <p class="text-gray-700 mb-6">Of client revenue generated through our experiences, aligning our success with theirs.</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-black mr-2 mt-1"></i>
+                            <span>Lower upfront cost for clients</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-black mr-2 mt-1"></i>
+                            <span>Ongoing partnership incentives</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-black mr-2 mt-1"></i>
+                            <span>Scalable revenue as experiences grow</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4">Subscription Plans</h3>
+                    <p class="text-5xl font-extrabold mb-4">$5K-$50K</p>
+                    <p class="text-gray-700 mb-6">Monthly retainers for enterprise clients requiring continuous development.</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-black mr-2 mt-1"></i>
+                            <span>Predictable revenue stream</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-black mr-2 mt-1"></i>
+                            <span>Dedicated development resources</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-black mr-2 mt-1"></i>
+                            <span>Priority support and updates</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investor Resources -->
+    <section id="investors" class="py-20 bg-black text-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16">INVESTOR RESOURCES</h2>
+            
+            <div class="max-w-4xl mx-auto mb-16">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="border border-gray-700 p-8 rounded-lg hover:bg-gray-900 transition service-tier">
+                        <h3 class="text-2xl font-bold mb-4">Investor Deck</h3>
+                        <p class="text-gray-400 mb-6">Comprehensive overview of our business model, traction, and growth strategy.</p>
+                        <a href="#" class="inline-block border-2 border-white px-6 py-2 font-bold hover:bg-white hover:text-black transition">
+                            Download PDF
+                        </a>
+                    </div>
+                    
+                    <div class="border border-gray-700 p-8 rounded-lg hover:bg-gray-900 transition service-tier">
+                        <h3 class="text-2xl font-bold mb-4">Data Room</h3>
+                        <p class="text-gray-400 mb-6">Detailed financials, cap table, and legal documents (password required).</p>
+                        <a href="#" class="inline-block border-2 border-white px-6 py-2 font-bold hover:bg-white hover:text-black transition">
+                            Request Access
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <h3 class="text-2xl font-bold mb-6">READY TO DISCUSS INVESTMENT OPPORTUNITIES?</h3>
+                <a href="#contact" class="inline-block bg-white text-black px-8 py-3 font-bold hover:bg-gray-200 transition">
+                    Contact Our Finance Team
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Press -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16">PRESS & RECOGNITION</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="border border-gray-200 p-6 rounded-lg hover:shadow-lg transition">
+                    <div class="flex items-center mb-4">
+                        <img src="Images/bloxy.jpg.jpg" alt="Drive Image" class="h-10 mr-4">
+                        <div>
+                            <p class="font-bold">Roblox Dev Blog</p>
+                            <p class="text-gray-500 text-sm">Featured Developer</p>
+                        </div>
+                    </div>
+                    <p>"Infinity Games sets new standard for branded experiences with innovative monetization techniques."</p>
+                </div>
+                
+                <div class="border border-gray-200 p-6 rounded-lg hover:shadow-lg transition">
+                    <div class="flex items-center mb-4">
+                        <img src="Images/digital.jpg" alt="Tech" class="h-10 mr-4">
+                        <div>
+                            <p class="font-bold">Digital Trends</p>
+                            <p class="text-gray-500 text-sm">Industry Report</p>
+                        </div>
+                    </div>
+                    <p>"The studio to watch for brands looking to authentically connect with Gen Z audiences."</p>
+                </div>
+
+                   
+                 
+                <div class="border border-gray-200 p-6 rounded-lg hover:shadow-lg transition">
+                    <div class="flex items-center mb-4">
+                        <img src="Images/6dc600da-688f-4dcc-b7dd-4d4751b41dd5.png" alt="VC" class="h-10 mr-4">
+                        <div>
+                            <p class="font-bold">Live Plan</p>
+                            <p class="text-gray-500 text-sm">Startup Spotlight</p>
+                        </div>
+                    </div>
+                    <p>"Infinity Games' revenue-share model demonstrates sustainable approach to metaverse development."</p>
+                </div>
+            </div>
+            
+
+             
+            <div class="text-center">
+                <a href="#" class="inline-block border-2 border-black px-8 py-3 font-bold hover:bg-black hover:text-white transition">
+                    View All Press Coverage
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16">CONTACT</h2>
+            
+            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6">GET IN TOUCH</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <i class="fas fa-envelope text-black mr-4 mt-1"></i>
+                            <div>
+                                <p class="font-bold">General Inquiries</p>
+                                <p>contact@infinitygamesllc.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-briefcase text-black mr-4 mt-1"></i>
+                            <div>
+                                <p class="font-bold">Investor Relations</p>
+                                <p>contact@infinitygamesllc.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-black mr-4 mt-1"></i>
+                            <div>
+                                <p class="font-bold">Headquarters</p>
+                                <p>Montreal, QC</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h4 class="font-bold mb-4">FOLLOW US</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-black hover:text-gray-600 transition">
+                                <i class="fab fa-linkedin-in text-2xl"></i>
+                            </a>
+                            <a href="#" class="text-black hover:text-gray-600 transition">
+                                <i class="fab fa-twitter text-2xl"></i>
+                            </a>
+                            <a href="#" class="text-black hover:text-gray-600 transition">
+                                <i class="fab fa-instagram text-2xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <form class="space-y-6">
+                        <div>
+                            <label for="name" class="block font-bold mb-2">Name</label>
+                            <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-black">
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block font-bold mb-2">Email</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-black">
+                        </div>
+                        
+                        <div>
+                            <label for="subject" class="block font-bold mb-2">Subject</label>
+                            <select id="subject" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-black">
+                                <option>General Inquiry</option>
+                                <option>Investor Relations</option>
+                                <option>Business Development</option>
+                                <option>Press Inquiry</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block font-bold mb-2">Message</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-black"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="bg-black text-white px-6 py-3 font-bold hover:bg-gray-800 transition">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div class="mb-6 md:mb-0">
+
+                    <img src="Images/Logo.webp" 
+                    alt="Infinity Games Logo" 
+                    class="h-20 w-auto mr-6"> <!-- h-20 = 5rem/80px -->
+                </div>
+                
+                <div class="flex flex-wrap justify-center gap-6 md:gap-12">
+                    <a href="#home" class="hover:text-gray-300 transition">Home</a>
+                    <a href="#traction" class="hover:text-gray-300 transition">Traction</a>
+                    <a href="#market" class="hover:text-gray-300 transition">Market</a>
+                    <a href="#team" class="hover:text-gray-300 transition">Team</a>
+                    <a href="#case-studies" class="hover:text-gray-300 transition">Case Studies</a>
+                    <a href="#investors" class="hover:text-gray-300 transition">Investors</a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <p class="text-gray-500">© 2023 Infinity Games. All rights reserved.</p>
+                    </div>
+                    
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-500 hover:text-white transition">Privacy Policy</a>
+                        <a href="#" class="text-gray-500 hover:text-white transition">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Loading screen animation
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    
+                    // Trigger fade-in animations for elements
+                    const fadeElements = document.querySelectorAll('.fade-in');
+                    fadeElements.forEach(el => {
+                        el.classList.add('visible');
+                    });
+                    
+                    // Intersection Observer for scroll animations
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('visible');
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    
+                    document.querySelectorAll('.fade-in').forEach(el => {
+                        observer.observe(el);
+                    });
+                }, 500);
+            }, 3000);
+            
+            // Mobile menu toggle
+            document.getElementById('mobile-menu-button').addEventListener('click', function() {
+                const menu = document.getElementById('mobile-menu');
+                menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Easter egg - Ctrl+F10
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'F10') {
+                    document.getElementById('hidden-game').style.display = 'flex';
+                }
+            });
+            
+            document.getElementById('close-game').addEventListener('click', function() {
+                document.getElementById('hidden-game').style.display = 'none';
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Close mobile menu if open
+                        const mobileMenu = document.getElementById('mobile-menu');
+                        if (mobileMenu.style.display === 'block') {
+                            mobileMenu.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
